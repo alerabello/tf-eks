@@ -1,10 +1,10 @@
 provider "aws" {
   region = "us-west-2"
-  profile = "${{ secrets.AWS_PROFILE }}"
+  profile = "api-terraform"
 }
 
 provider "kubernetes" {
-  config_path = "${{ secrets.KUBE_CONFIG }}"
+  config_path = "~/.kube/config"
   host   = module.eks.cluster_endpoint
   cluster_ca_certificate = base64decode(module.eks.cluster_certificate_authority_data)
 
@@ -16,7 +16,7 @@ provider "kubernetes" {
 
 provider "helm" {
     kubernetes {
-        config_path = "${{ secrets.KUBE_CONFIG }}"
+        config_path = "~/.kube/config"
         host   = module.eks.cluster_endpoint
         cluster_ca_certificate = base64decode(module.eks.cluster_certificate_authority_data)
         

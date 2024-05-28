@@ -83,4 +83,3 @@ variable "iam_role_use_name_prefix" {
   type        = bool
   default     = false
 }
-
