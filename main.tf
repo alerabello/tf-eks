@@ -22,6 +22,23 @@ module "eks" {
   cluster_encryption_policy_use_name_prefix = false
   iam_role_use_name_prefix                  = false
 
-  #
+  #Tags EKS
+  cluster_tags = var.cluster_tags
+  tags = var.tags
+  #Addons e Endpoints EKS
   cluster_endpoint_public_access = true
+  cluster_addons = {
+    vpcCni = {
+      enabled = true
+      most_recent = true
+    }
+    kubeProxy = {
+      enabled = true
+      most_recent = true
+    }
+    coredns = {
+      enabled = true
+      most_recent = true
+    }
+  }
 }

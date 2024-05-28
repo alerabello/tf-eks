@@ -14,6 +14,19 @@ variable "node_group_subnet_ids" {
   type        = string
 }
 
+# TAGS
+
+variable "cluster_tags" {
+  description = "A map of tags to add to the EKS cluster"
+  type        = map(string)
+  validation {
+    condition     = try(var.cluster_tags.Name, "") == ""
+    error_message = "value of 'Name' tag must be set using the 'cluster_name' variable"
+  }
+  default     = {}
+  
+}
+
 variable "tags" {
   description = "A map of tags to add to all resources"
   type        = map(string)
