@@ -16,7 +16,9 @@ module "eks" {
   enable_irsa                            = var.enable_irsa
 
   # Auth e Roles Acess EKS
+  enable_cluster_creator_admin_permissions = true
   access_entries = var.access_entries
+  authentication_mode = "API_AND_CONFIG_MAP"
 
   # IAM e Roles EKS
   cluster_encryption_policy_use_name_prefix = false
@@ -28,17 +30,53 @@ module "eks" {
   #Addons e Endpoints EKS
   cluster_endpoint_public_access = true
   cluster_addons = {
-    vpcCni = {
+    vpc-cni = {
       enabled = true
       most_recent = true
     }
-    kubeProxy = {
+    kube-proxy = {
       enabled = true
       most_recent = true
     }
     coredns = {
       enabled = true
       most_recent = true
+    }
+  }
+  
+  # EKS NODES GROUP
+  eks_managed_node_groups = {
+    eks-api-test ={
+      iam_role_use_name_prefix = false
+      use_name_prefix = false
+      name = "eks-api-test"
+      min_size = 1
+      max_size = 50
+      desired_capacity = 1
+      instance_types = ["t3.medium"]
+      ami_type = "AL2_x86_64"
+      capacity_type = "ON_DEMAND"
+      ebs_optimized = true
+      enable_monitoring = true
+      block_device_mappings = {
+        xvda = {
+          device_name = "/dev/xvda"
+          ebs = {
+            encrypted = true
+            volume_size = 30
+            volume_type = "gp3"
+            iops = 3000
+            throughput = 150
+            delete_on_termination = true
+          }
+        }
+      }
+      update_config = {
+        max_unavailable_percentage = 33 # or set max_unavailable
+      }
+      iam_role_additional_policies = {
+        "AmazonEC2FullAccess" = "arn:aws:iam::aws:policy/AmazonEC2FullAccess"
+      }
     }
   }
 }
