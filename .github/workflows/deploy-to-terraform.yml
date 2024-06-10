@@ -28,35 +28,33 @@ jobs:
       - name: Checkout Code
         uses: actions/checkout@v2
 
-      - name: Configure AWS Credentials
+      - name: Configure AWS Credentials - PLAN - Network
         if: ${{ github.event.inputs.aws_account == 'network' }}
         uses: aws-actions/configure-aws-credentials@v4
         with:
           role-to-assume: ${{ secrets.AWS_ROLE_ARN_NETWORK }}
           aws-region: us-east-1
 
-      - name: Configure AWS Credentials
+      - name: Configure AWS Credentials - PLAN - Production
         if: ${{ github.event.inputs.aws_account == 'prod' }}
         uses: aws-actions/configure-aws-credentials@v4
         with:
           role-to-assume: ${{ secrets.AWS_ROLE_ARN_PROD }}
           aws-region: us-east-1
 
-      - name: Configure AWS Credentials
+      - name: Configure AWS Credentials - PLAN - Stage
         if: ${{ github.event.inputs.aws_account == 'stage' }}
         uses: aws-actions/configure-aws-credentials@v4
         with:
           role-to-assume: ${{ secrets.AWS_ROLE_ARN_STAGE }}
           aws-region: us-east-1
 
-      - name: Configure AWS Credentials
+      - name: Configure AWS Credentials - PLAN - Develop
         if: ${{ github.event.inputs.aws_account == 'develop' }}
         uses: aws-actions/configure-aws-credentials@v4
         with:
-          role-to-assume: arn:aws:iam::590183887783:role/AMZ-GithubActions-DEV
+          role-to-assume: arn:aws:iam::590183887783:role/AMZ-Role-GithubActions-Developer
           aws-region: us-east-1
-          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
 
       - name: Install TFLint
         run: |
@@ -64,6 +62,7 @@ jobs:
           unzip tflint.zip
           sudo mv tflint /usr/local/bin/
           rm tflint.zip
+          
       - name: Lint Terraform files
         run: tflint
 
@@ -72,8 +71,6 @@ jobs:
         with:
           terraform_version: ${{ github.event.inputs.terraform_version }}
         env:
-          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           AWS_DEFAULT_REGION: us-east-1
 
       - name: Initialize Terraform
@@ -109,7 +106,7 @@ jobs:
         uses: trstringer/manual-approval@v1
         with:
           secret: ${{ secrets.GITHUB_TOKEN }}
-          approvers: alerabello
+          approvers: alerabello, GabrielFVentura
           minimum-approvals: 1
           additional-approved-words: 'Approve, Approved, approve, approved'
         timeout-minutes: 10
@@ -125,35 +122,33 @@ jobs:
       - name: Checkout Code
         uses: actions/checkout@v2
 
-      - name: Configure AWS Credentials
+      - name: Configure AWS Credentials - DEPLOY - network
         if: ${{ github.event.inputs.aws_account == 'network' }}
         uses: aws-actions/configure-aws-credentials@v4
         with:
           role-to-assume: ${{ secrets.AWS_ROLE_ARN_NETWORK }}
           aws-region: us-east-1
 
-      - name: Configure AWS Credentials
+      - name: Configure AWS Credentials - DEPLOY - Production
         if: ${{ github.event.inputs.aws_account == 'prod' }}
         uses: aws-actions/configure-aws-credentials@v4
         with:
           role-to-assume: ${{ secrets.AWS_ROLE_ARN_PROD }}
           aws-region: us-east-1
 
-      - name: Configure AWS Credentials
+      - name: Configure AWS Credentials - DEPLOY - Stage
         if: ${{ github.event.inputs.aws_account == 'stage' }}
         uses: aws-actions/configure-aws-credentials@v4
         with:
           role-to-assume: ${{ secrets.AWS_ROLE_ARN_STAGE }}
           aws-region: us-east-1
 
-      - name: Configure AWS Credentials
+      - name: Configure AWS Credentials - DEPLOY - Develop
         if: ${{ github.event.inputs.aws_account == 'develop' }}
         uses: aws-actions/configure-aws-credentials@v4
         with:
-          role-to-assume: arn:aws:iam::590183887783:role/AMZ-GithubActions-DEV
+          role-to-assume: arn:aws:iam::590183887783:role/AMZ-Role-GithubActions-Developer
           aws-region: us-east-1
-          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
       
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v3
