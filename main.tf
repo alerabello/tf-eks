@@ -29,7 +29,7 @@ module "eks" {
   tags = var.tags
 
   #Addons e Endpoints EKS
-  cluster_endpoint_public_access = true
+  cluster_endpoint_public_access = false
   cluster_addons = {
     vpc-cni = {
       enabled = true
@@ -40,6 +40,14 @@ module "eks" {
       most_recent = true
     }
     coredns = {
+      enabled = true
+      most_recent = true
+    }
+    aws-ebs-csi-driver = {
+      enabled = true
+      most_recent = true
+    }
+    aws-efs-csi-driver = {
       enabled = true
       most_recent = true
     }
